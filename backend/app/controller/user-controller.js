@@ -3,6 +3,7 @@ import { createUser , GetUser } from '../services/user-services.js';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
+import { setStorage, getStorage } from '../services/ethereum-service.js';
 
 //Add Notes controller
 export const createUserController = async(request,response)=>{
@@ -52,3 +53,25 @@ export const createUserController = async(request,response)=>{
            setError(error,response);
        }
    }
+
+   
+   export const setStorageController = async (req, res) => {
+    try {
+        const { value } = req.body;
+        await setStorage(value);
+        res.status(200).json({ message: 'Storage value set successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+export const getStorageController = async (req, res) => {
+    try {
+        const value = await getStorage();
+        res.status(200).json({ value });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
